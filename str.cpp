@@ -2,11 +2,17 @@
 
 # include "str.h"
 # include <cstring>
+#include <iostream>
 
+using namespace std;
+
+// constructor
 Str::Str() {
   this->val = nullptr;
 }
 Str::Str(const char *str) {
+  // new: specify lifetime delete
+  // + 1 the 'val'
   this->val = new char[strlen(str) + 1];
   strcpy(this->val, str);
   // for nullptrs
@@ -16,20 +22,40 @@ Str::Str(const char *str) {
 
 Str::Str(const Str &ptr) {
   this->val = new char[strlen(ptr.val) + 1];
+  cout << "Copy constructor B(const B&, int)" << endl;
+
   strcpy(this->val, ptr.val);
   // strcpy_s(this->val, strlen(ptr.val)+1, ptr.val);
 }
 
-Str Str::operator=(const Str &ptr) {
+// assign, need to delete other than copy
+// to clear the memory before assigning other
+// Str-return type
+//Str-qualifier, specify where operator= is stored and accessed
+// like an adjective
+Str* Str::operator=(const Str* &ptr) {
   if (this->val != nullptr)
     delete[] this->val;
-  this->val = new char[strlen(ptr.val) + 1];
-  strcpy(this->val, ptr.val);
-  // strcpy_s(this->val, strlen(ptr.val)+1, ptr.val);
+  // this->val = new char[strlen(ptr.val) + 1];
+  this->val = new char[strlen(ptr->val) + 1];
 
-  return *this;
+  // strcpy(this->val, ptr.val);
+  strcpy(this->val, ptr->val);
+  // 
+  // num = ptr->num;
+  // denom = ptr->denom;
+  // +1 the last null char
+  // strcpy_s(this->val, strlen(ptr.val)+1, ptr.val);
+  cout << "A& A::operator=(const A&)" << endl;
+  // cout << *this << " *this type" << endl;
+  // return val
+  // return *this;
+  return this;
+
 }
 
+
+// test gonna fail
 Str Str::operator+(const Str &ptr) {
   Str str1 = Str(this->val);
   return str1;
