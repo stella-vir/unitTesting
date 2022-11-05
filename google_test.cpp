@@ -31,15 +31,17 @@ struct BankAcct {
   void deposit(int amt) {
     bal += amt;
   }
-  void withdraw(int amt) {
-    if (amt > 0)
-      bal -= amt;
-  }
+  // void withdraw(int amt) {
+  //   if (amt > 0)
+  //     bal -= amt;
+  // }
   bool withdraw1(int amt) {
     if (amt <= bal) {
+      cout << "bal amt " << bal << " " << amt;
       bal -= amt;
       return true;
     }
+    cout << "amt" << amt;
     return false;
   }
 };
@@ -53,27 +55,40 @@ struct BankAcctTest:testing::Test {
   BankAcctTest() {
     acct = new BankAcct;
   }
+
+  // virtual void SetUp() override {
+  //   fprintf(stderr, "%s\n", "s string is fun");
+  //   fprintf(stderr, "Starting up\n");
+  //   acct = new BankAcct;
+  // }
+
   // virtual: to reuse BankAcctTest
   virtual ~BankAcctTest() {
     delete acct;
   }
+  // virtual void TearDown() override {
+  //   fprintf(stderr, "Tearing down\n");
+  //   delete acct;
+  // }
+
+
 
 };
-
-// test w/ func
-TEST_F(BankAcctTest, Canwithdraw) {
-    // BankAcct acct;
-    // ptr ref
-    acct->deposit(1000);
-    acct->withdraw(200);
-    EXPECT_EQ(800, acct->bal) << "Withdrew 200";
-}
 
 TEST_F(BankAcctTest, CanDeposit) {
     // BankAcct acct;
     // ptr ref
     acct->deposit(1000);
     EXPECT_EQ(1000, acct->bal) << "Deposited 1000";
+}
+
+// test w/ fixture
+TEST_F(BankAcctTest, Canwithdraw) {
+    // BankAcct acct;
+    // ptr ref
+    acct->deposit(1000);
+    acct->withdraw1(200);
+    EXPECT_EQ(800, acct->bal) << "Withdrew 200";
 }
 
 
@@ -89,6 +104,11 @@ TEST_F(BankAcctTest, CanDeposit) {
 // }
 
 // TEST(MyTestSuitName, MyTestCaseName) {
+// stop test early by this point if fails
+   // ASSERT_TRUE(true);
+// for (int i=0; i=16; ++i)
+//   EXPECT_EQ() << "i= " << i;
+
 //     int actual = 1;
 //     EXPECT_GT(actual, 0);
 //     EXPECT_EQ(1, actual) << "Should be equal to one";
@@ -96,20 +116,18 @@ TEST_F(BankAcctTest, CanDeposit) {
 
 struct acct_state {
   int init_bal;
-  int withdraw_bal;
+  int withdraw_amt;
   int total_bal;
   bool success;
 
   friend ostream &operator<<(ostream &os, const acct_state &obj) {
     os
       << "init " << obj.init_bal
-      << " withdraw " << obj.withdraw_bal
+      << " withdraw " << obj.withdraw_amt
       << " total_bal " << obj.total_bal
       << " success " << obj.success;
 
       return os;
-
-
   }
 };
 
@@ -128,7 +146,9 @@ struct WithdrawAcctTest:BankAcctTest, testing::WithParamInterface<acct_state> {
 // test w/ param
 TEST_P(WithdrawAcctTest, TotalBal) {
   auto para = GetParam();
-  auto success = acct->withdraw1(para.withdraw_bal);
+  auto success = acct->withdraw1(para.withdraw_amt);
+
+// expected, actual
   EXPECT_EQ(para.total_bal, acct->bal) << "Para.total_bal";
   // default: para.success set instantiate -> true
   // acct->withdraw1 -> false
@@ -141,8 +161,13 @@ TEST_P(WithdrawAcctTest, TotalBal) {
 // (prefix-a set of data, name, generator)
 INSTANTIATE_TEST_SUITE_P(Default, WithdrawAcctTest, testing::Values(
   // don't get personal
-  acct_state{3000, 2000, 1000, true},
-  acct_state{3000, 5000, 3000, false}
+  // test the bal
+  // acct_state{3000, 2000, 1000},
+  acct_state{3000, 2000, 1000, 1},
+  // test the success
+  // can't deduct 5000, only have the orig 3000
+  // the test passes on false
+  acct_state{3000, 5000, 3000, 0}
 
 ));
 

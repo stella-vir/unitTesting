@@ -12,7 +12,7 @@ Str::Str() {
 }
 Str::Str(const char *str) {
   // new: specify lifetime delete
-  // + 1 the 'val'
+  // + 1: complier \0 null char 
   this->val = new char[strlen(str) + 1];
   strcpy(this->val, str);
   // for nullptrs
@@ -41,12 +41,12 @@ Str* Str::operator=(const Str* &ptr) {
 
   // strcpy(this->val, ptr.val);
   strcpy(this->val, ptr->val);
-  // 
+  //
   // num = ptr->num;
   // denom = ptr->denom;
   // +1 the last null char
   // strcpy_s(this->val, strlen(ptr.val)+1, ptr.val);
-  cout << "A& A::operator=(const A&)" << endl;
+  // cout << "A& A::operator=(const A&)" << endl;
   // cout << *this << " *this type" << endl;
   // return val
   // return *this;
@@ -55,7 +55,7 @@ Str* Str::operator=(const Str* &ptr) {
 }
 
 
-// test gonna fail
+// test might fail
 Str Str::operator+(const Str &ptr) {
   Str str1 = Str(this->val);
   return str1;

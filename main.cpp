@@ -16,7 +16,7 @@ void test_length(int expecting, int actual, string test) {
   }
 }
 
-// operator= __str__ __repr__ ptr 
+// operator= __str__ __repr__ ptr
 /*
 void test_operator(Str& expecting, Str& actual, string test) {
   if (expecting == actual)
@@ -33,10 +33,10 @@ void test_operator(Str& expecting, Str& actual, string test) {
 void testStrClass() {
   // test length()
   // Str str("");
-  // test(0, str.length(), "String length 0");
+  // test_length(0, str.length(), "String length 0");
 
   Str str("three");
-  test(5, str.length(), "String length 5");
+  test_length(5, str.length(), "String length 5");
 
 
   // test operator=()
@@ -50,8 +50,8 @@ int main(int argc, char const *argv[]) {
   /* code */
   testStrClass();
   // copying
-  const Str str_const;
-  Str s(str_const);
+  // const Str str_const;
+  // Str s(str_const);
 
 //  indirection requires pointer operand ('Str' invalid)
   // Str *w, *z;
